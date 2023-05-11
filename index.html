@@ -1,0 +1,57 @@
+<textarea placeholder="Enter SQL..."></textarea>
+<pre><code></code></pre>
+
+<!--
+  sql-formatter: https://www.npmjs.com/package/sql-formatter
+-->
+<script src="https://unpkg.com/sql-formatter@12.2.0/dist/sql-formatter.min.js"></script>
+
+<script>
+
+let textarea = document.querySelector('textarea');
+let code = document.querySelector('code');
+
+let format = window.sqlFormatter.format;
+
+let colors = ['#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF', '#FFADAD', '#FFD6A5', '#FDFFB6', '#CAFFBF', '#9BF6FF', '#A0C4FF', '#BDB2FF', '#FFC6FF'];
+
+textarea.addEventListener('input', function(event) {
+  
+  let formatedSql = format(
+    event.target.value, {
+      language: 'sqlite',
+      tabWidth: 8,
+      keywordCase: 'upper',
+    }
+  );
+  
+  let resultHtmlSql = "";
+  let color;
+  let rows = formatedSql.split('\n');
+  
+  for (const row of rows) {
+    
+    let rowSegments = row.match(/.{1,8}/g);
+    color = colors[0];
+    
+    for (let i = 0; i < rowSegments.length; i++) {
+      
+      if (!rowSegments[i].replace(/\s/g, '').length) {
+        color = colors[i];
+        resultHtmlSql += '<span style="background-color:' + color + '">' + rowSegments[i] + '</span>';
+        color = colors[i+1];
+      } else {
+        resultHtmlSql += '<span style="background-color:' + color + '">' + rowSegments[i] + '</span>';
+      }
+      
+    }
+    
+    resultHtmlSql += "<br>";
+    
+  }
+  
+  code.innerHTML = resultHtmlSql;
+
+});
+  
+</script>
